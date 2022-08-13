@@ -1,18 +1,8 @@
 import AutorizationWithForm from "./AutorizationWithForm.js";
-import * as Auth from './Auth.js';
-import { useHistory } from "react-router-dom";
 
-function Login({ handleLogin }) {
-    const loginHistory = useHistory();
+function Login({ onLogin }) {
     function handleSubmit(email, password) {
-        Auth.authorize(email, password)
-        .then((data) => {
-            if (data.token){
-                handleLogin();
-                loginHistory.push('/');
-            }  
-        })
-        .catch(err => console.log(err));
+        onLogin(email, password);
     }
 
     return (

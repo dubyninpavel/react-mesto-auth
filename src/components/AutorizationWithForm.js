@@ -3,21 +3,20 @@ import Header from "./Header.js";
 import { NavLink } from 'react-router-dom';
 
 function AutorizationWithForm({ title, link, linkTitle, buttonTitle, onSubmit }) {
-    const [ email, setEmail ] = useState("");
-    const [ password, setPassword ] = useState("");
-
-    function handleEmailInput(evt) {
-        setEmail(evt.target.value);
-    }
-
-    function handlePasswordInput(evt) {
-        setPassword(evt.target.value);
-    }
+    const [valueInputs, setValuesInput] = useState({});
 
     function handleSubmit(evt) {
         evt.preventDefault();
-        onSubmit(email, password);
+        onSubmit(valueInputs.email, valueInputs.password);
     }
+
+    function handleChangeInputs(evt) { 
+        const { name, value } = evt.target;
+        setValuesInput((previousValues) => ({ 
+            ...previousValues, 
+            [name]: value
+        }));
+    } 
 
     return (
         <>
@@ -33,8 +32,8 @@ function AutorizationWithForm({ title, link, linkTitle, buttonTitle, onSubmit })
                         type = "email"
                         name = "email"
                         placeholder = "Email"
-                        value = {email || ""}
-                        onChange = {handleEmailInput}
+                        value = {valueInputs.email || ""}
+                        onChange = {handleChangeInputs}
                         required
                     />
                     <input
@@ -45,8 +44,8 @@ function AutorizationWithForm({ title, link, linkTitle, buttonTitle, onSubmit })
                         placeholder = "Пароль"
                         minLength = "8"
                         maxLength = "40"
-                        value = {password || ""} 
-                        onChange = {handlePasswordInput}
+                        value = {valueInputs.password || ""} 
+                        onChange = {handleChangeInputs}
                         required
                     />
                     <button className="autorization__button" type="submit" >{buttonTitle}</button>

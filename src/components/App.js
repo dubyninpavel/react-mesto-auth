@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
-import '../pages/index.css';
 import api from '../utils/Api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import Header from './Header';
@@ -15,7 +14,7 @@ import Login from './Login.js';
 import Register from './Register.js';
 import InfoTooltip from './InfoTooltip.js';
 import PageNotFound from './PageNotFound.js';
-import * as Auth from './Auth.js';
+import * as Auth from '../utils/Auth.js';
 
 function App() {
     const [ currentUser, setCurrentUser ] = useState({});
@@ -35,27 +34,27 @@ function App() {
     const [ windowWidth, setWindowWidth ] = useState("");
     const history = useHistory();
     
-    
-    
     useEffect(() => {
         setWindowWidth(window.innerWidth);
     }, [windowWidth]);
 
     useEffect(() => {
-        api.getDataUser()
-            .then((dataUser) => {
-                setCurrentUser(dataUser);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-        api.getCards()
-            .then((cards) => {
-                setCards(cards);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        if (loggedIn) {
+            api.getDataUser()
+                .then((dataUser) => {
+                    setCurrentUser(dataUser);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+            api.getCards()
+                .then((cards) => {
+                    setCards(cards);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
         if (localStorage.getItem('token')) {
             const token = localStorage.getItem('token');
             if (token){
@@ -72,10 +71,33 @@ function App() {
                 });
             } 
         }
-    }, []);
+    }, [loggedIn]);
 
-    function handleLogin() {
-        setLoggedIn(true);
+    function handleLogin(email, password) {
+        Auth.authorize({ email, password })
+        .then((data) => {
+            if (data.token){
+                setLoggedIn(true);
+                history.push('/');
+            }  
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }
+
+    function handleRegister(email, password) {
+        Auth.register({ email, password })
+        .then((res) => {
+            if (res) {
+                infoTooltipRegisterOpen(true);
+            } else {
+                infoTooltipRegisterOpen(false);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        });
     }
 
     function infoTooltipRegisterOpen(status) {
@@ -222,18 +244,20 @@ function App() {
         <Switch>
             <Route path="/signup">
                 <Register
-                    onInfoTooltipRegister = {infoTooltipRegisterOpen}
+                    onRegister = {handleRegister}
                 />
                 <InfoTooltip
                     isOpen = {infoTooltipRegister}
                     onClose = {infoTooltipRegisterClose}
                     appellation = {'register'}
                     requestStatus = {requestStatus}
+                    goodRequestText = "Вы успешно зарегистрировались!"
+                    badRequestText = "Что-то пошло не так! Попробуйте ещё раз."
                 />
             </Route>
             <Route path="/signin">
                 <Login 
-                    handleLogin = {handleLogin}
+                    onLogin = {handleLogin}
                 />
             </Route>
             <Route exact path="/">

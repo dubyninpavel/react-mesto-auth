@@ -2,7 +2,7 @@ import goodRequestPhoto from '../images/good-request.jpg';
 import badRequestPhoto from '../images/bad-request.jpg';
 import { useHistory } from 'react-router-dom';
 
-function InfoTooltip({ isOpen, onClose, appellation, requestStatus }) {
+function InfoTooltip({ isOpen, onClose, appellation, requestStatus, goodRequestText, badRequestText }) {
     const historyRegister = useHistory();
 
     function handleClose() {
@@ -17,7 +17,7 @@ function InfoTooltip({ isOpen, onClose, appellation, requestStatus }) {
             <div className={`popup__content popup__content_${appellation}`} onClick={evt => evt.stopPropagation()}>
                 <button className="popup__close" type="button" onClick={handleClose}></button>
                 <img className="tooltip__image" src={requestStatus ? goodRequestPhoto : badRequestPhoto} />
-                <p className="tooltip__subtitle">{ requestStatus ? "Вы успешно зарегистрировались!" : "Что-то пошло не так! Попробуйте ещё раз." }</p>
+                <p className="tooltip__subtitle">{ requestStatus ? goodRequestText : badRequestText }</p>
             </div>
         </div>
     );

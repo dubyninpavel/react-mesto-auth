@@ -23,10 +23,12 @@ export function register({ email, password }) {
     .then((res) => {
         return res;
     })
-    .catch((err) => console.log(err))
+    .catch((err) => {
+        console.log(err);
+    });
 }
 
-export function authorize(email, password) {
+export function authorize({ email, password }) {
     return fetch(`${BASE_URL}/signin`, {
         method: 'POST',
         headers: {
@@ -42,8 +44,8 @@ export function authorize(email, password) {
             if (res.ok){
                 return res.json();
             }
-        } catch(e) {
-            return (e);
+        } catch(err) {
+            return (err);
         }
     })
     .then((data) => {
@@ -52,7 +54,9 @@ export function authorize(email, password) {
             return data;
         }
     })
-    .catch(err => console.log(err))
+    .catch((err) => {
+        console.log(err);
+    });
 };
 
 export function getContent(token) {
@@ -71,5 +75,7 @@ export function getContent(token) {
     .then((data) => {
         return data;
     })
-    .catch(err => console.log(err))
+    .catch((err) => {
+        console.log(err);
+    });
 }

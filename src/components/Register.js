@@ -1,20 +1,10 @@
 import AutorizationWithForm from "./AutorizationWithForm.js";
 import { NavLink } from 'react-router-dom';
-import * as Auth from './Auth.js';
+import * as Auth from '../utils/Auth.js';
 
-function Register({ onInfoTooltipRegister }) {
+function Register({ onRegister }) {
     function handleSubmit(email, password) {
-        Auth.register({ email, password })
-        .then((res) => {
-            if (res) {
-                onInfoTooltipRegister(true);
-            } else {
-                onInfoTooltipRegister(false);
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-        })
+        onRegister(email, password);
     }
 
     return (
